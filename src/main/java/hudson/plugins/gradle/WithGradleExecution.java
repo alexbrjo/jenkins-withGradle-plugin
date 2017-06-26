@@ -137,7 +137,7 @@ public class WithGradleExecution extends StepExecution {
     }
 
     /**
-     * Wraps GradleConsoleAnnotator in a ConsoleLogFilter so it can be merged with the existing
+     * Wraps {@link GradleConsoleAnnotator} in a {@link ConsoleLogFilter} so it can be merged with the existing
      * log filter.
      */
     private static class GradleConsoleFilter extends ConsoleLogFilter implements Serializable {
@@ -148,7 +148,7 @@ public class WithGradleExecution extends StepExecution {
         }
 
         /**
-         * Creates a GradleConsoleAnnotator for an {@link OutputStream}
+         * Creates a {@link GradleConsoleAnnotator} for an {@link OutputStream}
          *
          * @param build this is ignored
          * @param out the {@link OutputStream} to annotate
@@ -200,10 +200,25 @@ public class WithGradleExecution extends StepExecution {
                will almost always set the build status to true because the Gradle build will not have completed when the
                code block body has finished executing.
             */
+            boolean finished = false;
+            while (!finished) {
+                List<String> log = context.get(Run.class).getLog(100);
+                for (String s : log) {
+                    if (s.contains("BUILD") || s.contains("ERROR")) {
+                        finished = true;
+                        break;
+                    }
+                }
+                Thread.sleep(100);
+            }
+
             List<String> log = context.get(Run.class).getLog(100);
             for (String s : log) {
                 if (s.contains("BUILD FAILED")) {
-                    context.onSuccess(Result.FAILURE);
+                    context.onFailure(new Failure("Gradle build was marked as FAILURE"));
+                    return;
+                } else if (s.contains("ERROR")) {
+                    context.onFailure(new Failure("Gradle threw an ERROR"));
                     return;
                 }
             }

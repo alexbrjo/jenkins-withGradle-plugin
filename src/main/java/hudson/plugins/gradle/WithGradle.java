@@ -46,7 +46,7 @@ import java.util.Set;
 
 /**
  * The WithGradle pipeline step. For the most part only getters, setters and scaffolding code. The actual logic and
- * configuaration are in {@link WithGradleExecution}.
+ * configuration are in {@link WithGradleExecution}.
  *
  * @author Alex Johnson
  */
