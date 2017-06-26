@@ -6,5 +6,5 @@ Maven project for development.
 
 Before adding these changes back to the `pipeline compat` branch I need to find a patch
 for the build.gradle so dependencies are packaged correctly. Currently @abayer has helped 
-come up for a fix for compilation, but half of the tests still fail on run and `./gradle server`
+come up for a fix for compilation, but half of the tests still fail on run and `./gradlew server`
 doesn't load the plugin successfully.
